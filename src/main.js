@@ -26,6 +26,17 @@ game.events.once('ready', () => {
 
     // Start Game Trigger
     startGameBtn.addEventListener('click', () => {
+        // 전체 화면 요청 (모바일 주소창 숨기기)
+        try {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen();
+            }
+        } catch (e) {
+            console.warn("Fullscreen request blocked", e);
+        }
+
         titleScreen.style.opacity = '0';
         setTimeout(() => {
             titleScreen.classList.add('hidden');
@@ -156,5 +167,9 @@ function triggerGlitch(element) {
 
 // UI Controls
 restartBtn.addEventListener('click', () => {
+    window.location.reload();
+});
+
+document.getElementById('go-main-btn').addEventListener('click', () => {
     window.location.reload();
 });

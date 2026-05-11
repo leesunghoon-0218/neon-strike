@@ -3,8 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NEON STRIKE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>NEON STRIKE // CYBERPUNK RUNNER</title>
+    <!-- Mobile App Settings -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     <style>
       /* 프리로딩 시 하얀 화면 방지 */
       body { background-color: #000 !important; margin: 0; padding: 0; overflow: hidden; }
@@ -106,9 +110,14 @@
             </div>
           </div>
 
-          <button id="restart-btn" class="w-full glass-panel py-4 text-white/50 font-bold tracking-[0.5em] hover:bg-white/10 transition-all">
-            시스템 재시작
-          </button>
+          <div class="flex flex-col gap-3">
+            <button id="restart-btn" class="w-full glass-panel py-4 neon-border-cyan neon-text-cyan font-bold tracking-[0.5em] hover:bg-neon-cyan hover:text-black transition-all">
+              다시 시작
+            </button>
+            <button id="go-main-btn" class="w-full glass-panel py-3 text-white/30 font-bold tracking-[0.3em] hover:bg-white/5 transition-all text-xs">
+              메인 메뉴로
+            </button>
+          </div>
         </div>
       </div>
 
