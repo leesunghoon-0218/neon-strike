@@ -101,9 +101,9 @@ export default class Player {
     useUltimate(onComplete) {
         const { scene } = this;
         
-        // 1. 서포트 캐릭터 등장
+        // 1. 서포트 캐릭터 등장 (기존보다 2배 커진 120x120)
         const support = scene.add.sprite(this.sprite.x - 50, this.sprite.y, 'support');
-        support.setDisplaySize(60, 60);
+        support.setDisplaySize(120, 120);
         support.setAlpha(0);
         support.setDepth(15);
 
@@ -143,8 +143,8 @@ export default class Player {
             
             beam.clear();
             
-            // 광선 두께가 변하는 연출 (펄스)
-            const thickness = 40 + Math.sin(now * 0.05) * 10;
+            // 광선 두께가 변하는 연출 (기존보다 2배 두꺼운 80 기준)
+            const thickness = 80 + Math.sin(now * 0.05) * 20;
             const beamColor = 0x00f3ff;
             const innerColor = 0xffffff;
 

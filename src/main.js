@@ -70,6 +70,47 @@ game.events.once('ready', () => {
     // Game Over
     scene.events.on('game-over', () => {
         gameOverScreen.classList.remove('hidden');
+        document.getElementById('final-score').innerText = scene.score;
+        updateLeaderboardDisplay();
+    });
+
+    // Leaderboard Logic
+    const saveScoreBtn = document.getElementById('save-score-btn');
+    const playerNameInput = document.getElementById('player-name-input');
+    const leaderboardList = document.getElementById('leaderboard-list');
+
+    function updateLeaderboardDisplay() {
+        const scores = JSON.parse(localStorage.getItem('neon-strike-scores') || '[]');
+        leaderboardList.innerHTML = scores.map((s, i) => `
+            <div class="flex justify-between items-center bg-white/5 p-2 rounded">
+                <span class="text-white/50 w-6">${i + 1}.</span>
+                <span class="flex-1 neon-text-cyan px-2">${s.name}</span>
+                <span class="font-bold">${s.score.toLocaleString()}</span>
+            </div>
+        `).join('') || '<div class="text-white/20 text-center py-4">기록이 없습니다</div>';
+    }
+
+    saveScoreBtn.addEventListener('click', () => {
+        const name = playerNameInput.value.trim() || 'UNKNOWN';
+        const score = scene.score;
+        
+        let scores = JSON.parse(localStorage.getItem('neon-strike-scores') || '[]');
+        scores.push({ name, score, date: new Date().toISOString() });
+        scores.sort((a, b) => b.score - a.score);
+        scores = scores.slice(0, 5); // TOP 5
+        
+        localStorage.setItem('neon-strike-scores', JSON.stringify(scores));
+        
+        // Hide entry and update list
+        document.getElementById('name-entry-container').classList.add('hidden');
+        updateLeaderboardDisplay();
+    });
+
+    // Stage Update
+    const stageValue = document.getElementById('stage-value');
+    scene.events.on('update-stage', (stage) => {
+        stageValue.innerText = stage.toString().padStart(2, '0');
+        triggerGlitch(document.getElementById('stage-panel'));
     });
 
     // Special Charge Update

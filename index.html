@@ -36,6 +36,11 @@
       <!-- TOP HUD (HIDDEN INITIALLY) -->
       <div id="top-hud" class="flex justify-between items-start w-full pointer-events-auto opacity-0 transition-opacity duration-1000 gap-2 p-2 md:p-4">
         <div class="flex gap-2">
+          <div class="glass-panel p-2 md:p-4 neon-border-magenta flex flex-col gap-0 md:gap-1 min-w-[80px]" id="stage-panel">
+            <span class="text-[10px] md:text-xs uppercase tracking-widest text-white/50">스테이지</span>
+            <span class="text-xl md:text-3xl font-bold neon-text-magenta font-mono" id="stage-value">01</span>
+          </div>
+
           <div class="glass-panel p-2 md:p-4 neon-border-cyan flex flex-col gap-0 md:gap-1 min-w-[100px] md:min-w-[150px]" id="score-panel">
             <span class="text-[10px] md:text-xs uppercase tracking-widest text-white/50">현재 점수</span>
             <span class="text-xl md:text-3xl font-bold neon-text-cyan font-mono" id="score-value">000000</span>
@@ -79,12 +84,30 @@
       </div>
 
       <!-- GAME OVER SCREEN (HIDDEN) -->
-      <div id="game-over" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-xl hidden pointer-events-auto">
-        <div class="text-center">
-          <h1 class="text-6xl font-black neon-text-magenta mb-4 glitch-active">임무 실패</h1>
-          <p class="text-white/60 mb-8 tracking-[0.5em]">시스템 셧다운 임박</p>
-          <button id="restart-btn" class="glass-panel px-10 py-4 neon-border-cyan neon-text-cyan font-bold tracking-widest hover:bg-neon-cyan hover:text-black transition-all">
-            시스템 재부팅
+      <div id="game-over" class="fixed inset-0 z-[500] flex items-center justify-center bg-black/90 backdrop-blur-2xl hidden pointer-events-auto">
+        <div class="glass-panel p-10 md:p-16 neon-border-magenta text-center max-w-md w-full mx-4">
+          <h1 class="text-5xl md:text-6xl font-black neon-text-magenta mb-2 italic">MISSION FAILED</h1>
+          <div class="text-white/40 mb-8 tracking-[0.3em] text-xs">최종 점수: <span id="final-score" class="text-white font-bold">0</span></div>
+          
+          <!-- NAME ENTRY -->
+          <div id="name-entry-container" class="mb-8">
+            <input type="text" id="player-name-input" maxlength="10" placeholder="기록할 이름을 입력하세요" 
+                   class="w-full bg-white/5 border border-white/20 p-3 rounded neon-text-cyan text-center outline-none focus:border-neon-cyan transition-all mb-4">
+            <button id="save-score-btn" class="w-full glass-panel py-3 neon-border-cyan neon-text-cyan font-bold tracking-widest hover:bg-neon-cyan hover:text-black transition-all">
+              순위 기록
+            </button>
+          </div>
+
+          <!-- LEADERBOARD -->
+          <div class="mb-10 text-left">
+            <div class="text-[10px] text-white/30 uppercase tracking-widest mb-4 border-b border-white/10 pb-1">TOP AGENTS</div>
+            <div id="leaderboard-list" class="flex flex-col gap-2 font-mono text-sm h-32 overflow-y-auto pr-2 custom-scrollbar">
+              <!-- Entries will be injected here -->
+            </div>
+          </div>
+
+          <button id="restart-btn" class="w-full glass-panel py-4 text-white/50 font-bold tracking-[0.5em] hover:bg-white/10 transition-all">
+            시스템 재시작
           </button>
         </div>
       </div>

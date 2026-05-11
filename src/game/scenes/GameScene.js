@@ -107,6 +107,12 @@ export default class GameScene extends Phaser.Scene {
         // Disable physics until start
         this.physics.pause();
 
+        // Difficulty & Stages
+        this.currentStage = 1;
+        this.maxStages = 10;
+        this.gameTime = 0;
+        this.difficultyLevel = 1;
+
         // UI Events
         this.events.on('start-game', () => {
             this.isPlaying = true;
@@ -130,14 +136,16 @@ export default class GameScene extends Phaser.Scene {
     spawnEnemy() {
         if (this.isGameOver || !this.isPlaying) return;
         
-        const enemyType = Phaser.Math.Between(1, 3);
-        const enemy = this.enemies.get();
-        if (enemy) {
-            enemy.spawn(
-                this.scale.width + 50, 
-                Phaser.Math.Between(100, this.scale.height - 100),
-                `enemy${enemyType}`
-            );
+        // 난이도에 따른 생성 수 조절
+        const spawnCount = Math.floor(this.difficultyLevel);
+        for (let i = 0; i < (spawnCount || 1); i++) {
+            const enemyType = Phaser.Math.Between(1, 3);
+            const enemy = this.enemies.get();
+            if (enemy) {
+                // 화면 하단 충돌 문제를 해결하기 위해 스폰 범위 조정 (100 ~ height-100)
+                const spawnY = Phaser.Math.Between(100, this.scale.height - 100);
+                enemy.spawn(this.scale.width + 100 + (i * 50), spawnY, `enemy${enemyType}`, this.difficultyLevel);
+            }
         }
     }
 
@@ -158,8 +166,23 @@ export default class GameScene extends Phaser.Scene {
             return;
         }
 
-        // 배경 스크롤 속도
-        this.bg.tilePositionX += 2;
+        // 스테이지 및 난이도 상승 로직
+        this.gameTime += delta;
+        
+        // 20초마다 스테이지 상승
+        const nextStage = Math.min(Math.floor(this.gameTime / 20000) + 1, 10);
+        if (nextStage > this.currentStage) {
+            this.currentStage = nextStage;
+            this.events.emit('update-stage', this.currentStage);
+            // 스테이지 클리어 연출 (잠시 후 난이도 확 상승)
+            this.cameras.main.flash(500, 255, 0, 255, true);
+        }
+
+        // 극악의 난이도로 조정 (스테이지에 따라 기하급수적 상승)
+        this.difficultyLevel = this.currentStage * (1 + (this.gameTime % 20000) / 20000);
+
+        // 배경 스크롤 속도 (스테이지에 비례)
+        this.bg.tilePositionX += 2 * (1 + this.currentStage * 0.2);
         
         this.player.update();
 
