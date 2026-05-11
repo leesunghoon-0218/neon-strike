@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-black text-white overflow-hidden m-0 p-0 font-sans;
+    background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-xl;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+  }
+
+  .neon-border-cyan {
+    @apply border-neon-cyan/30 shadow-[0_0_10px_rgba(0,243,255,0.3)];
+  }
+
+  .neon-text-cyan {
+    @apply text-neon-cyan drop-shadow-[0_0_8px_rgba(0,243,255,0.8)];
+  }
+
+  .neon-text-magenta {
+    @apply text-neon-magenta drop-shadow-[0_0_8px_rgba(255,0,255,0.8)];
+  }
+
+  .glitch-active {
+    @apply animate-glitch-pulse;
+  }
+}
+
+#game-container {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+#hud-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  pointer-events: none;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

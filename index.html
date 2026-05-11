@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NEON STRIKE</title>
+    <style>
+      /* 프리로딩 시 하얀 화면 방지 */
+      body { background-color: #000 !important; margin: 0; padding: 0; overflow: hidden; }
+      #hud-overlay { background-color: transparent; pointer-events: none; }
+      #hud-overlay > * { pointer-events: auto; }
+    </style>
+  </head>
+  <body>
+    <div id="game-container"></div>
+
+    <div id="hud-overlay">
+      <!-- TITLE SCREEN -->
+      <div id="title-screen" class="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-black/60 backdrop-blur-xl pointer-events-auto transition-all duration-700">
+        <div class="text-center group">
+          <div class="mb-2 text-neon-cyan/50 tracking-[1em] text-xs uppercase animate-pulse">System Initialization</div>
+          <h1 class="text-5xl md:text-8xl font-black neon-text-cyan mb-2 tracking-tighter italic">NEON<br/><span class="neon-text-magenta">STRIKE</span></h1>
+          <p class="text-white/40 mb-12 tracking-[0.3em] text-xs md:text-sm">2026 ADVANCED COMBAT SIMULATOR</p>
+          
+          <button id="start-game-btn" class="glass-panel px-10 md:px-16 py-4 md:py-6 neon-border-cyan neon-text-cyan font-bold tracking-[0.5em] text-lg md:text-xl hover:bg-neon-cyan hover:text-black hover:shadow-[0_0_30px_#00f3ff] transition-all transform hover:scale-110">
+            [ 시스템 접속 ]
+          </button>
+        </div>
+        
+        <div class="absolute bottom-10 left-10 text-[10px] text-white/20 uppercase tracking-widest hidden md:block">
+          Build v1.0.4 // DeepMind Agentic Systems
+        </div>
+      </div>
+
+      <!-- TOP HUD (HIDDEN INITIALLY) -->
+      <div id="top-hud" class="flex justify-between items-start w-full pointer-events-auto opacity-0 transition-opacity duration-1000 gap-2 p-2 md:p-4">
+        <div class="flex gap-2">
+          <div class="glass-panel p-2 md:p-4 neon-border-cyan flex flex-col gap-0 md:gap-1 min-w-[100px] md:min-w-[150px]" id="score-panel">
+            <span class="text-[10px] md:text-xs uppercase tracking-widest text-white/50">현재 점수</span>
+            <span class="text-xl md:text-3xl font-bold neon-text-cyan font-mono" id="score-value">000000</span>
+          </div>
+          
+          <!-- PAUSE BUTTON -->
+          <button id="pause-btn" class="glass-panel w-12 h-12 md:w-16 md:h-16 flex items-center justify-center neon-border-cyan hover:bg-white/10 active:scale-90 transition-all">
+            <div class="flex gap-1">
+              <div class="w-1.5 h-4 bg-neon-cyan"></div>
+              <div class="w-1.5 h-4 bg-neon-cyan"></div>
+            </div>
+          </button>
+        </div>
+
+        <div class="glass-panel p-2 md:p-4 neon-border-cyan flex flex-col gap-0 md:gap-1 min-w-[140px] md:min-w-[200px]" id="health-panel">
+          <span class="text-[10px] md:text-xs uppercase tracking-widest text-white/50 text-right">보호막 무결성</span>
+          <div class="w-full bg-white/10 h-2 md:h-3 rounded-full overflow-hidden mt-1">
+            <div id="health-bar" class="h-full bg-neon-cyan shadow-[0_0_10px_#00f3ff] transition-all duration-300" style="width: 100%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPECIAL CHARGE GAUGE -->
+      <div id="charge-hud" class="absolute top-1/2 left-10 -translate-y-1/2 flex flex-col items-center gap-2 opacity-0 transition-opacity duration-300">
+        <div class="h-48 w-2 bg-white/10 rounded-full overflow-hidden relative border border-neon-magenta/30">
+          <div id="charge-bar" class="absolute bottom-0 w-full bg-neon-magenta shadow-[0_0_15px_#ff00ff] transition-all duration-100" style="height: 0%"></div>
+        </div>
+        <span class="text-[10px] text-neon-magenta font-bold tracking-tighter uppercase [writing-mode:vertical-lr]">Special Charge</span>
+      </div>
+
+      <!-- BOTTOM HUD / CONTROLS (HIDDEN INITIALLY) -->
+      <div id="bottom-hud" class="flex justify-between items-end w-full opacity-0 transition-opacity duration-1000 p-4 md:p-6">
+        <div class="glass-panel p-3 text-[10px] text-white/30 uppercase tracking-[0.2em] hidden md:block">
+          시스템: 정상 // 연결: 안정적
+        </div>
+
+        <!-- MOBILE SPECIAL BUTTON -->
+        <button id="mobile-special-btn" class="md:hidden glass-panel w-20 h-20 rounded-full border-2 border-neon-magenta neon-text-magenta font-black text-xs flex items-center justify-center active:scale-90 active:bg-neon-magenta/20 transition-all select-none pointer-events-auto">
+          ULTIMATE<br/>HOLD
+        </button>
+      </div>
+
+      <!-- GAME OVER SCREEN (HIDDEN) -->
+      <div id="game-over" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-xl hidden pointer-events-auto">
+        <div class="text-center">
+          <h1 class="text-6xl font-black neon-text-magenta mb-4 glitch-active">임무 실패</h1>
+          <p class="text-white/60 mb-8 tracking-[0.5em]">시스템 셧다운 임박</p>
+          <button id="restart-btn" class="glass-panel px-10 py-4 neon-border-cyan neon-text-cyan font-bold tracking-widest hover:bg-neon-cyan hover:text-black transition-all">
+            시스템 재부팅
+          </button>
+        </div>
+      </div>
+
+      <!-- PAUSE MENU (HIDDEN) -->
+      <div id="pause-menu" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 backdrop-blur-md hidden pointer-events-auto">
+        <div class="glass-panel p-12 neon-border-cyan text-center flex flex-col gap-6">
+          <h2 class="text-4xl font-black neon-text-cyan tracking-widest uppercase">Paused</h2>
+          <div class="flex flex-col gap-3">
+            <button id="resume-btn" class="glass-panel py-3 px-8 neon-text-cyan font-bold tracking-widest hover:bg-neon-cyan hover:text-black transition-all">
+              작전 재개
+            </button>
+            <button id="main-menu-btn" class="glass-panel py-3 px-8 text-white/50 font-bold tracking-widest hover:bg-white/10 transition-all">
+              메인 메뉴로
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
